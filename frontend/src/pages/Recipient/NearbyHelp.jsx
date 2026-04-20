@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import BottomNav from '../../components/BottomNav';
 import { Menu, LogOut, MapPin, Clock } from 'lucide-react';
+import { apiUrl } from '../../lib/api';
 
 export default function NearbyHelp() {
   const { user, logout } = useAuth();
@@ -11,7 +12,7 @@ export default function NearbyHelp() {
   const [filter, setFilter] = useState('All');
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/listings')
+    fetch(apiUrl('/api/listings'))
       .then(res => res.json())
       .then(data => setListings(data))
       .catch(err => console.error(err));
@@ -24,7 +25,7 @@ export default function NearbyHelp() {
 
   const handleClaim = async (listingId) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/listings/${listingId}/claim`, {
+      const response = await fetch(apiUrl(`/api/listings/${listingId}/claim`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ recipient_id: user.id })

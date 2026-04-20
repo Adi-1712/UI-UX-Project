@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import BottomNav from '../../components/BottomNav';
 import { Menu, LogOut, PlusCircle, ArrowRight } from 'lucide-react';
+import { apiUrl } from '../../lib/api';
 
 export default function DonorDashboard() {
   const { user, logout } = useAuth();
@@ -10,7 +11,7 @@ export default function DonorDashboard() {
   const [listings, setListings] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/listings/donor/${user.id}`)
+    fetch(apiUrl(`/api/listings/donor/${user.id}`))
       .then(res => res.json())
       .then(data => setListings(data))
       .catch(err => console.error(err));

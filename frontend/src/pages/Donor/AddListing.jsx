@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { ArrowLeft, Camera, MapPin, Clock, Calendar } from 'lucide-react';
+import { apiUrl } from '../../lib/api';
 
 export default function AddListing() {
   const { user } = useAuth();
@@ -21,7 +22,7 @@ export default function AddListing() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/api/listings', {
+      const response = await fetch(apiUrl('/api/listings'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...formData, donor_id: user.id })

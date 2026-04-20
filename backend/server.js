@@ -2,8 +2,19 @@ const express = require('express');
 const cors = require('cors');
 const db = require('./database');
 
+require('dotenv').config();
+
 const app = express();
-app.use(cors());
+const corsOrigin = process.env.CORS_ORIGIN;
+app.use(
+  cors(
+    corsOrigin
+      ? {
+          origin: corsOrigin.split(',').map((s) => s.trim()).filter(Boolean),
+        }
+      : undefined
+  )
+);
 app.use(express.json());
 
 // Users: Register

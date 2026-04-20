@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import BottomNav from '../../components/BottomNav';
 import { Menu, ArrowLeft, CheckCircle2, Truck, Phone, Navigation } from 'lucide-react';
+import { apiUrl } from '../../lib/api';
 
 export default function LiveTracking() {
   const { user } = useAuth();
@@ -13,7 +14,7 @@ export default function LiveTracking() {
   useEffect(() => {
     // In a real app we'd fetch the specific task by taskId
     // Here we fetch volunteer's tasks and find this one
-    fetch(`http://localhost:3001/api/tasks/volunteer/${user.id}`)
+    fetch(apiUrl(`/api/tasks/volunteer/${user.id}`))
       .then(res => res.json())
       .then(data => {
         const currentTask = data.find(t => t.task_id.toString() === taskId);
@@ -25,7 +26,7 @@ export default function LiveTracking() {
   const updateStatus = async (newStatus) => {
     if (!task) return;
     try {
-      await fetch(`http://localhost:3001/api/tasks/${task.task_id}/status`, {
+      await fetch(apiUrl(`/api/tasks/${task.task_id}/status`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })

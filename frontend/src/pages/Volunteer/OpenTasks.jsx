@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import BottomNav from '../../components/BottomNav';
 import { Menu, LogOut, MapPin, Package, Clock } from 'lucide-react';
+import { apiUrl } from '../../lib/api';
 
 export default function OpenTasks() {
   const { user, logout } = useAuth();
@@ -10,7 +11,7 @@ export default function OpenTasks() {
   const [listings, setListings] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/listings/claimed')
+    fetch(apiUrl('/api/listings/claimed'))
       .then(res => res.json())
       .then(data => setListings(data))
       .catch(err => console.error(err));
@@ -23,7 +24,7 @@ export default function OpenTasks() {
 
   const acceptTask = async (listingId) => {
     try {
-      const response = await fetch('http://localhost:3001/api/tasks', {
+      const response = await fetch(apiUrl('/api/tasks'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ volunteer_id: user.id, listing_id: listingId })
