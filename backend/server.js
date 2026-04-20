@@ -8,11 +8,31 @@ const { initDb } = require('./initDb');
 
 const app = express();
 const corsOrigin = process.env.CORS_ORIGIN;
+const allowedOrigins = (corsOrigin || '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean)
+  .map((s) => s.replace(/\/+$/, '')); // Origin header never includes trailing slash
+
 app.use(
   cors(
-    corsOrigin
+    allowedOrigins.length
       ? {
-          origin: corsOrigin.split(',').map((s) => s.trim()).filter(Boolean),
+          origin: (origin, cb) => {
+            // Allow non-browser clients (curl, server-to-server) with no Origin header
+            if (!origin) return cb(null, true);
+
+            const normalized = String(origin).replace(/\/+$/, '');
+            if (allowedOrigins.includes(normalized)) return cb(null, true);
+
+            // Optional: allow Vercel preview URLs when enabled
+            const previewRegex = process.env.CORS_ORIGIN_REGEX
+              ? new RegExp(process.env.CORS_ORIGIN_REGEX)
+              : null;
+            if (previewRegex && previewRegex.test(normalized)) return cb(null, true);
+
+            return cb(new Error(`CORS blocked for origin: ${origin}`));
+          },
         }
       : undefined
   )
